@@ -10,7 +10,6 @@
 
     :root {
       --film-strip-bg: #1a1a1a;
-      --kodak-yellow: #F5A800;
       --frame-w: 180px;
       --strip-w: 260px;
     }
@@ -258,15 +257,13 @@
       margin-top: 24px;
       padding: 20px;
     }
-    #done-msg h2 {
-      font-family: 'Special Elite', serif;
-      font-size: 1.4rem;
-      color: #222;
-    }
     #done-msg p {
-      font-size: 0.9rem;
-      color: #666;
-      margin-top: 6px;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 1.05rem;
+      color: #444;
+    }
+    #done-msg p em {
+      font-style: italic;
     }
 
     /* ── ANIMATIONS ── */
@@ -328,21 +325,20 @@
 </div>
 
 <div id="done-msg">
-  <h2>🎞️ All developed!</h2>
-  <p>Every frame is a memory I treasure with you. ♡</p>
+  <p>I'm not expressive, but <em>I love you.</em></p>
 </div>
 
 <script>
   // ── EDIT THESE ────────────────────────────────────
   const PHOTOS = [
-    { src: "photos/photo1.jpg" },
-    { src: "photos/photo2.jpg" },
-    { src: "photos/photo3.jpg" },
-    { src: "photos/photo4.jpg" },
-    { src: "photos/photo5.jpg" },
-    { src: "photos/photo6.jpg" },
-    { src: "photos/photo7.jpg" },
-    { src: "photos/photo8.jpg" },
+    { src: "photos/photo1.jpeg" },
+    { src: "photos/photo2.jpeg" },
+    { src: "photos/photo3.jpeg" },
+    { src: "photos/photo4.jpeg" },
+    { src: "photos/photo5.jpeg" },
+    { src: "photos/photo6.jpeg" },
+    { src: "photos/photo7.jpeg" },
+    { src: "photos/photo8.jpeg" },
   ];
   // ──────────────────────────────────────────────────
 
@@ -359,7 +355,6 @@
   const totalStripH   = PHOTOS.length * FRAME_H + 40;
   const sprocksNeeded = Math.ceil(totalStripH / SPROCKET_U) + 4;
 
-  // Build sprocket holes
   [spLeft, spRight].forEach(col => {
     for (let i = 0; i < sprocksNeeded; i++) {
       const h = document.createElement('div');
@@ -368,7 +363,6 @@
     }
   });
 
-  // Build photo frames (no captions)
   PHOTOS.forEach((p, i) => {
     const frame = document.createElement('div');
     frame.className = 'frame';
@@ -381,7 +375,6 @@
     framesCol.appendChild(frame);
   });
 
-  // Pull interaction
   let currentH   = 0;
   let isDragging = false;
   let startY     = 0;
@@ -410,7 +403,6 @@
     }
   }
 
-  // Mouse events
   pullTab.addEventListener('mousedown', e => {
     isDragging = true;
     startY = e.clientY;
@@ -427,7 +419,6 @@
     document.body.style.userSelect = '';
   });
 
-  // Touch events
   pullTab.addEventListener('touchstart', e => {
     isDragging = true;
     startY = e.touches[0].clientY;
