@@ -1,1 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>film-roll</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --film-strip-bg: #1a1a1a;
+      --kodak-yellow: #F5A800;
+      --frame-w: 180px;
+      --strip-w: 260px;
+    }
+
+    body {
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── INTRO ── */
+    #intro {
+      text-align: center;
+      margin-bottom: 32px;
+      animation: fadeUp 1s ease forwards;
+    }
+    #intro h1 {
+      font-family: 'Times New Roman', Times, serif;
+      font-style: italic;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      color: #222;
+      letter-spacing: 1px;
+    }
+    #intro p {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      color: #888;
+      font-weight: 300;
+    }
+
+    /* ── CANISTER WRAP ── */
+    #canister-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: var(--strip-w);
+    }
+
+    /* ── CANISTER ── */
+    .canister {
+      width: 220px;
+      background: linear-gradient(135deg, #F5A800 0%, #e09400 60%, #c07800 100%);
+      border-radius: 14px 14px 8px 8px;
+      padding: 10px 16px 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.2);
+      position: relative;
+      border: 2px solid #c07800;
+    }
+    .canister::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 56px;
+      height: 24px;
+      background: linear-gradient(to bottom, #444, #222);
+      border-radius: 6px 6px 0 0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .canister::after {
+      content: '';
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 10px;
+      background: #555;
+      border-radius: 4px 4px 0 0;
+    }
+    .canister-stripes {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 10px;
+      border-radius: 12px 12px 0 0;
+      background: repeating-linear-gradient(
+        90deg, transparent 0px, transparent 6px, rgba(0,0,0,0.3) 6px, rgba(0,0,0,0.3) 7px
+      );
+    }
+    .can-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 12px;
+    }
+    .can-iso {
+      font-family: 'Special Elite', serif;
+      font-size: 2.4rem;
+      color: rgba(255,255,255,0.9);
+      line-height: 1;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    }
+    .can-logo {
+      font-family: 'Special Elite', serif;
+      font-size: 1.3rem;
+      color: rgba(255,255,255,0.85);
+      font-style: italic;
+      letter-spacing: -1px;
+    }
+    .can-label {
+      font-size: 0.72rem;
+      color: rgba(0,0,0,0.7);
+      line-height: 1.4;
+      font-weight: 500;
+      margin: 4px 0 2px;
+    }
+    .can-sub {
+      font-size: 0.6rem;
+      color: rgba(0,0,0,0.55);
+    }
+    .can-bottom-bar {
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Special Elite', serif;
+      font-size: 1.1rem;
+    }
+
+    /* ── FILM STRIP ── */
+    #film-container {
+      width: var(--strip-w);
+      overflow: hidden;
+      position: relative;
+    }
+    #film-strip {
+      width: var(--strip-w);
+      background: var(--film-strip-bg);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 20px;
+    }
+
+    .sprocket-col {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      pointer-events: none;
+    }
+    .sprocket-col.left  { left: 0; }
+    .sprocket-col.right { right: 0; }
+
+    .sprocket-hole {
+      width: 14px;
+      height: 10px;
+      background: #ffffff;
+      border-radius: 2px;
+      margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+
+    .frames-col {
+      width: var(--frame-w);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+    }
+
+    .frame {
+      width: var(--frame-w);
+      height: 150px;
+      background: #222;
+      border: 2px solid #333;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .frame.revealed {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(0.15) contrast(1.05);
+      transition: filter 0.4s ease;
+    }
+    .frame:hover img { filter: sepia(0) contrast(1); }
+
+    .frame-number {
+      position: absolute;
+      top: 3px; left: 5px;
+      font-size: 0.55rem;
+      color: rgba(255,200,0,0.6);
+      font-family: 'Special Elite', serif;
+    }
+
+    /* ── PULL TAB ── */
+    #pull-tab {
+      width: var(--strip-w);
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      border-top: 3px dashed #444;
+    }
+    #pull-tab:active { cursor: grabbing; }
+
+    .tab-handle {
+      background: linear-gradient(135deg, #F5A800, #c07800);
+      color: #111;
+      font-family: 'Special Elite', serif;
+      font-size: 0.75rem;
+      padding: 8px 18px;
+      border-radius: 0 0 20px 20px;
+      letter-spacing: 1px;
+      animation: pulse 2s ease-in-out infinite;
+      text-align: center;
+    }
+    .tab-arrows {
+      font-size: 1rem;
+      color: #555;
+      margin: 6px 0;
+      animation: bounce 1.5s ease infinite;
+    }
+
+    /* ── DONE MESSAGE ── */
+    #done-msg {
+      display: none;
+      text-align: center;
+      margin-top: 24px;
+      padding: 20px;
+    }
+    #done-msg h2 {
+      font-family: 'Special Elite', serif;
+      font-size: 1.4rem;
+      color: #222;
+    }
+    #done-msg p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+      50%       { box-shadow: 0 4px 24px rgba(245,168,0,0.6); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(6px); }
+    }
+
+    @media (max-width: 400px) {
+      :root { --frame-w: 150px; --strip-w: 220px; }
+      .canister { width: 190px; }
+    }
+  </style>
+</head>
+<body>
+
+<section id="intro">
+  <h1>Honey.</h1>
+  <p>Pull the film down ↓</p>
+</section>
+
+<div id="canister-wrap">
+
+  <div class="canister">
+    <div class="canister-stripes"></div>
+    <div class="can-top-row">
+      <span class="can-iso">200</span>
+      <span class="can-logo">DXn</span>
+    </div>
+    <div class="can-label">35 mm Film<br>for Color Prints</div>
+    <div class="can-sub">KODAK 200 • 36</div>
+    <div class="can-bottom-bar">
+      <span>200</span>
+      <span>36 EXP.</span>
+    </div>
+  </div>
+
+  <div id="film-container">
+    <div id="film-strip">
+      <div class="sprocket-col left"  id="sprockets-left"></div>
+      <div class="sprocket-col right" id="sprockets-right"></div>
+      <div class="frames-col" id="frames-col"></div>
+    </div>
+  </div>
+
+  <div id="pull-tab">
+    <div class="tab-handle">✦ PULL TO DEVELOP ✦</div>
+    <div class="tab-arrows">▼ ▼ ▼</div>
+  </div>
+
+</div>
+
+<div id="done-msg">
+  <h2>🎞️ All developed!</h2>
+  <p>Every frame is a memory I treasure with you. ♡</p>
+</div>
+
+<script>
+  // ── EDIT THESE ────────────────────────────────────
+  const PHOTOS = [
+    { src: "photos/photo1.jpg" },
+    { src: "photos/photo2.jpg" },
+    { src: "photos/photo3.jpg" },
+    { src: "photos/photo4.jpg" },
+    { src: "photos/photo5.jpg" },
+    { src: "photos/photo6.jpg" },
+    { src: "photos/photo7.jpg" },
+    { src: "photos/photo8.jpg" },
+  ];
+  // ──────────────────────────────────────────────────
+
+  const FRAME_H     = 162;
+  const SPROCKET_U  = 24;
+
+  const framesCol = document.getElementById('frames-col');
+  const spLeft    = document.getElementById('sprockets-left');
+  const spRight   = document.getElementById('sprockets-right');
+  const filmCont  = document.getElementById('film-container');
+  const pullTab   = document.getElementById('pull-tab');
+  const doneMsg   = document.getElementById('done-msg');
+
+  const totalStripH   = PHOTOS.length * FRAME_H + 40;
+  const sprocksNeeded = Math.ceil(totalStripH / SPROCKET_U) + 4;
+
+  // Build sprocket holes
+  [spLeft, spRight].forEach(col => {
+    for (let i = 0; i < sprocksNeeded; i++) {
+      const h = document.createElement('div');
+      h.className = 'sprocket-hole';
+      col.appendChild(h);
+    }
+  });
+
+  // Build photo frames (no captions)
+  PHOTOS.forEach((p, i) => {
+    const frame = document.createElement('div');
+    frame.className = 'frame';
+    frame.id = `frame-${i}`;
+    frame.innerHTML = `
+      <span class="frame-number">${String(i + 1).padStart(2, '0')}A</span>
+      <img src="${p.src}" alt="Memory ${i + 1}" loading="lazy"
+           onerror="this.style.display='none';this.parentElement.style.background='#2a2a2a';">
+    `;
+    framesCol.appendChild(frame);
+  });
+
+  // Pull interaction
+  let currentH   = 0;
+  let isDragging = false;
+  let startY     = 0;
+  let startH     = 0;
+  let fullyDone  = false;
+
+  filmCont.style.height   = '0px';
+  filmCont.style.overflow = 'hidden';
+
+  function setHeight(h) {
+    h = Math.max(0, Math.min(h, totalStripH));
+    currentH = h;
+    filmCont.style.height = h + 'px';
+
+    PHOTOS.forEach((_, i) => {
+      if (h >= i * FRAME_H + 60) {
+        document.getElementById(`frame-${i}`)?.classList.add('revealed');
+      }
+    });
+
+    if (h >= totalStripH && !fullyDone) {
+      fullyDone = true;
+      pullTab.style.display = 'none';
+      doneMsg.style.display = 'block';
+      doneMsg.style.animation = 'fadeUp 0.8s ease forwards';
+    }
+  }
+
+  // Mouse events
+  pullTab.addEventListener('mousedown', e => {
+    isDragging = true;
+    startY = e.clientY;
+    startH = currentH;
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    setHeight(startH + (e.clientY - startY) * 1.4);
+  });
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    document.body.style.userSelect = '';
+  });
+
+  // Touch events
+  pullTab.addEventListener('touchstart', e => {
+    isDragging = true;
+    startY = e.touches[0].clientY;
+    startH = currentH;
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    setHeight(startH + (e.touches[0].clientY - startY) * 1.4);
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('touchend', () => { isDragging = false; });
+</script>
+</body>
+</html>
